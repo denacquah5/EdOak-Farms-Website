@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the platform (investor, client, or admin)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "admin"] },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "FarmProject": {
+      "title": "Farm Project",
+      "description": "A Farm For Me project",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "totalAcreage": { "type": "number" },
+        "availableAcreage": { "type": "number" },
+        "cropType": { "type": "string" },
+        "status": { "type": "string", "enum": ["funding", "active", "harvested", "completed"] },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["name", "totalAcreage", "availableAcreage", "cropType", "status", "createdAt"]
+    },
+    "FarmBlock": {
+      "title": "Farm Block",
+      "description": "An allocated block within a Farm Project assigned to a client",
+      "type": "object",
+      "properties": {
+        "projectId": { "type": "string" },
+        "clientId": { "type": "string" },
+        "acreage": { "type": "number" },
+        "status": { "type": "string", "enum": ["assigned", "active", "harvested"] },
+        "assignedAt": { "type": "timestamp" }
+      },
+      "required": ["projectId", "clientId", "acreage", "status", "assignedAt"]
+    },
+    "FarmActivity": {
+      "title": "Farm Activity",
+      "description": "An update on a farm block or project",
+      "type": "object",
+      "properties": {
+        "projectId": { "type": "string" },
+        "blockId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "mediaUrls": { "type": "array", "items": { "type": "string" } },
+        "date": { "type": "timestamp" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["projectId", "title", "description", "date", "createdBy"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "A contact form submission",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "location": { "type": "string" },
+        "interest": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "timestamp" },
+        "status": { "type": "string", "enum": ["new", "contacted", "resolved"] }
+      },
+      "required": ["name", "email", "message", "createdAt", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles and roles"
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/FarmProject" },
+      "description": "Stores Farm For Me projects"
+    },
+    "/blocks/{blockId}": {
+      "schema": { "$ref": "#/entities/FarmBlock" },
+      "description": "Stores allocated farm blocks for clients"
+    },
+    "/activities/{activityId}": {
+      "schema": { "$ref": "#/entities/FarmActivity" },
+      "description": "Stores updates and activities for projects/blocks"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/Inquiry" },
+      "description": "Stores contact form submissions"
+    }
+  }
+}

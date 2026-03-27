@@ -1,0 +1,138 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "denacquah5@gmail.com" && request.auth.token.email_verified == true));
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['uid', 'email', 'displayName', 'role', 'createdAt']) &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
+             data.email is string && isValidEmail(data.email) && data.email.size() < 150 &&
+             data.displayName is string && data.displayName.size() < 100 &&
+             data.role in ['client', 'admin'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidProject(data) {
+      return hasOnlyAllowedFields(['name', 'description', 'totalAcreage', 'availableAcreage', 'cropType', 'status', 'createdAt']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 150 &&
+             data.description is string && data.description.size() < 2000 &&
+             data.totalAcreage is number && data.totalAcreage > 0 &&
+             data.availableAcreage is number && data.availableAcreage >= 0 &&
+             data.cropType is string && data.cropType.size() > 0 && data.cropType.size() < 100 &&
+             data.status in ['funding', 'active', 'harvested', 'completed'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidBlock(data) {
+      return hasOnlyAllowedFields(['projectId', 'clientId', 'acreage', 'status', 'assignedAt']) &&
+             data.projectId is string && data.projectId.size() > 0 && data.projectId.size() < 100 &&
+             data.clientId is string && data.clientId.size() > 0 && data.clientId.size() < 100 &&
+             data.acreage is number && data.acreage > 0 &&
+             data.status in ['assigned', 'active', 'harvested'] &&
+             data.assignedAt is timestamp;
+    }
+
+    function isValidActivity(data) {
+      return hasOnlyAllowedFields(['projectId', 'blockId', 'title', 'description', 'mediaUrls', 'date', 'createdBy']) &&
+             data.projectId is string && data.projectId.size() > 0 && data.projectId.size() < 100 &&
+             data.blockId is string && data.blockId.size() < 100 &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.description is string && data.description.size() < 5000 &&
+             data.mediaUrls is list && data.mediaUrls.size() <= 10 &&
+             data.date is timestamp &&
+             data.createdBy is string && data.createdBy.size() > 0 && data.createdBy.size() < 100;
+    }
+
+    function isValidInquiry(data) {
+      return hasOnlyAllowedFields(['name', 'email', 'phone', 'location', 'interest', 'message', 'createdAt', 'status']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 150 &&
+             data.email is string && isValidEmail(data.email) && data.email.size() < 150 &&
+             data.phone is string && data.phone.size() < 50 &&
+             data.location is string && data.location.size() < 150 &&
+             data.interest is string && data.interest.size() < 100 &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 2000 &&
+             data.createdAt is timestamp &&
+             data.status in ['new', 'contacted', 'resolved'];
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    ((isOwner(userId) && request.resource.data.role == 'client') || isAdmin()) &&
+                    request.resource.data.uid == request.auth.uid;
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    ((isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin()) &&
+                    request.resource.data.uid == resource.data.uid &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    match /projects/{projectId} {
+      allow read: if true; // Publicly readable for the website
+      allow create: if isAdmin() && isValidProject(request.resource.data);
+      allow update: if isAdmin() && isValidProject(request.resource.data) &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    match /blocks/{blockId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.clientId == request.auth.uid);
+      allow create: if isAdmin() && isValidBlock(request.resource.data);
+      allow update: if isAdmin() && isValidBlock(request.resource.data) &&
+                    request.resource.data.assignedAt == resource.data.assignedAt;
+      allow delete: if isAdmin();
+    }
+
+    match /activities/{activityId} {
+      allow read: if isAdmin() || 
+                  (isAuthenticated() && (
+                    resource.data.blockId == '' || // Project-wide activity
+                    exists(/databases/$(database)/documents/blocks/$(resource.data.blockId)) && 
+                    get(/databases/$(database)/documents/blocks/$(resource.data.blockId)).data.clientId == request.auth.uid
+                  ));
+      allow create: if isAdmin() && isValidActivity(request.resource.data);
+      allow update: if isAdmin() && isValidActivity(request.resource.data) &&
+                    request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if isAdmin();
+    }
+
+    match /inquiries/{inquiryId} {
+      allow read: if isAdmin();
+      allow create: if isValidInquiry(request.resource.data);
+      allow update: if isAdmin() && isValidInquiry(request.resource.data) &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,122 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
+import { Tractor } from 'lucide-react';
+
+export default function Signup() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      return setError('Passwords do not match');
+    }
+
+    if (formData.password.length < 6) {
+      return setError('Password must be at least 6 characters');
+    }
+
+    setLoading(true);
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+
+      // Create user profile in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: `${formData.firstName} ${formData.lastName}`,
+        role: 'client', // Default role
+        createdAt: serverTimestamp()
+      });
+
+      navigate('/dashboard');
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to create an account.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md border-none shadow-xl">
+        <CardHeader className="space-y-1 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="w-12 h-12 bg-[var(--color-accent)] rounded-xl flex items-center justify-center">
+              <Tractor className="w-6 h-6 text-white" />
+            </div>
+          </div>
+          <CardTitle className="text-2xl font-serif font-bold text-slate-900">Create an Account</CardTitle>
+          <CardDescription>
+            Join EdOak Farms and start your agricultural portfolio
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md text-center">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700" htmlFor="firstName">First Name</label>
+                <Input id="firstName" name="firstName" required value={formData.firstName} onChange={handleChange} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700" htmlFor="lastName">Last Name</label>
+                <Input id="lastName" name="lastName" required value={formData.lastName} onChange={handleChange} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700" htmlFor="email">Email</label>
+              <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700" htmlFor="password">Password</label>
+              <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700" htmlFor="confirmPassword">Confirm Password</label>
+              <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} />
+            </div>
+            
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Sign Up'}
+            </Button>
+          </form>
+          
+          <div className="mt-6 text-center text-sm text-slate-600">
+            Already have an account?{' '}
+            <Link to="/login" className="font-medium text-[var(--color-primary)] hover:underline">
+              Sign in
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
