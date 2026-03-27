@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Tractor } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -63,18 +64,30 @@ export default function Signup() {
   return (
     <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex">
       {/* Left side - Image */}
-      <div className="hidden lg:block lg:w-1/2 relative">
-        <img 
-          src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2072&auto=format&fit=crop" 
-          alt="Agriculture" 
-          className="absolute inset-0 w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+        <motion.div 
+          className="absolute inset-0"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2072&auto=format&fit=crop" 
+            alt="Agriculture" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </motion.div>
         <div className="absolute inset-0 bg-[var(--color-primary-dark)]/50 mix-blend-multiply" />
-        <div className="absolute inset-0 flex flex-col justify-end p-16 text-white">
+        <motion.div 
+          className="absolute inset-0 flex flex-col justify-end p-16 text-white"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h2 className="text-4xl font-serif font-bold mb-4">Invest in Agriculture</h2>
           <p className="text-lg text-slate-200 max-w-md">Create an account to access our Farm For Me program and build your agricultural portfolio today.</p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Right side - Form */}
@@ -82,9 +95,7 @@ export default function Signup() {
         <Card className="w-full max-w-md border-none shadow-xl">
           <CardHeader className="space-y-1 text-center">
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-[var(--color-accent)] rounded-xl flex items-center justify-center">
-                <Tractor className="w-6 h-6 text-white" />
-              </div>
+              <img src="/logo.png" alt="EdOak Farms" className="h-12 object-contain" />
             </div>
             <CardTitle className="text-2xl font-serif font-bold text-slate-900">Create an Account</CardTitle>
             <CardDescription>

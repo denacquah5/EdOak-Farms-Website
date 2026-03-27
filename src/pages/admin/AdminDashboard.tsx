@@ -8,6 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { auth, db } from '../../lib/firebase';
 import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore';
 import { Users, Tractor, Sprout, Package, AlertCircle, Send } from 'lucide-react';
+import { motion } from 'motion/react';
 import Clients from './Clients';
 import Projects from './Projects';
 import Blocks from './Blocks';
@@ -113,18 +114,28 @@ function Overview() {
     <div className="space-y-8">
       {/* Banner */}
       <div className="relative rounded-2xl overflow-hidden bg-[var(--color-primary-dark)] h-48 flex items-center px-8 shadow-md">
-        <div className="absolute inset-0 opacity-40">
+        <motion.div 
+          className="absolute inset-0 opacity-40"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
           <img 
             src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a3023?q=80&w=2070&auto=format&fit=crop" 
             alt="Farm Landscape" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-        </div>
-        <div className="relative z-10">
+        </motion.div>
+        <motion.div 
+          className="relative z-10"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h1 className="text-3xl font-serif font-bold text-white mb-2">Admin Dashboard</h1>
           <p className="text-emerald-50 text-lg">Welcome back, {profile?.displayName}. Here's an overview of EdOak Farms operations.</p>
-        </div>
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

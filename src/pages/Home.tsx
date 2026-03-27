@@ -9,19 +9,24 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-[var(--color-primary-dark)] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <motion.div 
+          className="absolute inset-0 opacity-20"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
           <img 
-            src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a3023?q=80&w=2070&auto=format&fit=crop" 
-            alt="Mechanized Farming" 
+            src="https://images.unsplash.com/photo-1473973266408-ed4e27abdd47?q=80&w=2072&auto=format&fit=crop" 
+            alt="Working Tractor in Farm" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-        </div>
+        </motion.div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: "easeOut" }}
             className="max-w-3xl"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6">

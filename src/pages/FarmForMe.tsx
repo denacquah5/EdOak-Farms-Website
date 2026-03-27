@@ -2,21 +2,32 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { CheckCircle2, ArrowRight, ShieldCheck, TrendingUp, Clock, FileText, Smartphone } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function FarmForMe() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Hero */}
       <div className="relative bg-[var(--color-primary-dark)] py-24 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
+        <motion.div 
+          className="absolute inset-0 opacity-30"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
           <img 
             src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a3023?q=80&w=2070&auto=format&fit=crop" 
             alt="Farm For Me" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        </motion.div>
+        <motion.div 
+          className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <span className="inline-block px-4 py-1.5 bg-[var(--color-accent)] text-white text-xs font-bold rounded-full mb-6 uppercase tracking-wider">
             Flagship Offering
           </span>
@@ -38,7 +49,7 @@ export default function FarmForMe() {
               </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

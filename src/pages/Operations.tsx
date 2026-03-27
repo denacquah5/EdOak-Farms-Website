@@ -1,5 +1,6 @@
 import { Card, CardContent } from '../components/ui/Card';
 import { Tractor, Droplets, Sprout, PackageSearch, Truck, BarChart3 } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function Operations() {
   const operations = [
@@ -38,21 +39,31 @@ export default function Operations() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Header */}
-      <div className="relative bg-[var(--color-primary-dark)] py-20 text-center overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
+      <div className="relative bg-[var(--color-primary-dark)] py-24 text-center overflow-hidden">
+        <motion.div 
+          className="absolute inset-0 opacity-30"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
           <img 
-            src="https://images.unsplash.com/photo-1595844730298-b960fad97301?q=80&w=2070&auto=format&fit=crop" 
-            alt="Farm Operations" 
+            src="https://images.unsplash.com/photo-1589923188900-85dae523342b?q=80&w=2070&auto=format&fit=crop" 
+            alt="Advanced Tractor Operations" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-        </div>
-        <div className="relative z-10">
+        </motion.div>
+        <motion.div 
+          className="relative z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">How We Work</h1>
           <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
-            An inside look at the operational intelligence and infrastructure powering EdOak Farms.
+            An inside look at the operational intelligence and advanced mechanization powering EdOak Farms.
           </p>
-        </div>
+        </motion.div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

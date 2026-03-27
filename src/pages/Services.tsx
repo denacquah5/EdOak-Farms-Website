@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Tractor, Sprout, Building2, Briefcase, Truck, LineChart } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function Services() {
   const services = [
@@ -59,21 +60,31 @@ export default function Services() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="relative bg-[var(--color-primary-dark)] py-20 text-center overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
+      <div className="relative bg-[var(--color-primary-dark)] py-24 text-center overflow-hidden">
+        <motion.div 
+          className="absolute inset-0 opacity-30"
+          initial={{ scale: 1 }}
+          animate={{ scale: 1.05 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+        >
           <img 
             src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a3023?q=80&w=2070&auto=format&fit=crop" 
             alt="Farm Services" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
-        </div>
-        <div className="relative z-10">
+        </motion.div>
+        <motion.div 
+          className="relative z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Our Services</h1>
           <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
             A fully integrated suite of agribusiness solutions designed for scale, efficiency, and profitability.
           </p>
-        </div>
+        </motion.div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
