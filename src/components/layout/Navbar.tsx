@@ -40,7 +40,12 @@ export function Navbar() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="EdOak Farms" className="h-10 object-contain" />
+            <div className="w-10 h-10 bg-[var(--color-primary)] rounded-lg flex items-center justify-center">
+              <Tractor className="w-6 h-6 text-white" />
+            </div>
+            <span className="font-serif font-bold text-xl text-[var(--color-primary-dark)] tracking-tight">
+              EdOak Farms
+            </span>
           </Link>
 
           {/* Desktop Nav */}

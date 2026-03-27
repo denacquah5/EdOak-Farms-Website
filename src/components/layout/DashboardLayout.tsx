@@ -92,7 +92,9 @@ export function DashboardLayout({ children, isAdmin = false }: DashboardLayoutPr
           {/* Sidebar Header */}
           <div className="h-20 flex items-center justify-between px-6 border-b border-slate-100">
             <Link to="/" className="flex items-center space-x-2">
-              <img src="/logo.png" alt="EdOak Farms" className="h-8 object-contain" />
+              <div className="w-8 h-8 bg-[var(--color-primary)] rounded flex items-center justify-center">
+                <Tractor className="w-5 h-5 text-white" />
+              </div>
               <span className="font-serif font-bold text-lg text-[var(--color-primary-dark)]">
                 {isAdmin ? 'Admin Portal' : 'Investor Portal'}
               </span>
