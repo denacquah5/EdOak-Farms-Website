@@ -53,15 +53,20 @@ export default function FarmForMe() {
         {/* Benefits */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           {[
-            { icon: ShieldCheck, title: "Professionally Managed", desc: "Expert agronomists and farm managers handle every aspect of production, from land prep to harvest." },
-            { icon: Smartphone, title: "Transparent & Update-Driven", desc: "Monitor your farm's progress through our secure investor dashboard with real-time photos and reports." },
-            { icon: TrendingUp, title: "Scalable Returns", desc: "Benefit from economies of scale, mechanization, and our integrated value-addition processing." }
+            { icon: ShieldCheck, title: "Professionally Managed", desc: "Expert agronomists and farm managers handle every aspect of production, from land prep to harvest.", image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=800&auto=format&fit=crop" },
+            { icon: Smartphone, title: "Transparent & Update-Driven", desc: "Monitor your farm's progress through our secure investor dashboard with real-time photos and reports.", image: "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=800&auto=format&fit=crop" },
+            { icon: TrendingUp, title: "Scalable Returns", desc: "Benefit from economies of scale, mechanization, and our integrated value-addition processing.", image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=800&auto=format&fit=crop" }
           ].map((benefit, i) => (
-            <Card key={i} className="border-none shadow-md hover:shadow-lg transition-shadow">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 mx-auto bg-emerald-50 rounded-full flex items-center justify-center mb-6">
-                  <benefit.icon className="w-8 h-8 text-[var(--color-primary)]" />
+            <Card key={i} className="border-none shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+              <div className="h-48 w-full relative">
+                <img src={benefit.image} alt={benefit.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                    <benefit.icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
+              </div>
+              <CardContent className="p-8 text-center">
                 <h3 className="text-xl font-bold text-slate-900 mb-4">{benefit.title}</h3>
                 <p className="text-slate-600">{benefit.desc}</p>
               </CardContent>

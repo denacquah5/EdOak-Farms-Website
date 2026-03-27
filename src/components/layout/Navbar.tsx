@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/Button';
-import { Menu, X, Phone, Mail } from 'lucide-react';
+import { Menu, X, Phone, Mail, Tractor } from 'lucide-react';
 import { useState } from 'react';
 
 export function Navbar() {
@@ -41,7 +41,7 @@ export function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-[var(--color-primary)] rounded-lg flex items-center justify-center">
-              <span className="text-white font-serif font-bold text-xl">EF</span>
+              <Tractor className="w-6 h-6 text-white" />
             </div>
             <span className="font-serif font-bold text-xl text-[var(--color-primary-dark)] tracking-tight">
               EdOak Farms
@@ -66,7 +66,7 @@ export function Navbar() {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <Link to={profile?.role === 'admin' ? '/admin' : '/dashboard'}>
+              <Link to={profile?.role === 'admin' || user?.email === 'denacquah5@gmail.com' ? '/admin' : '/dashboard'}>
                 <Button variant="outline">Dashboard</Button>
               </Link>
             ) : (
@@ -110,7 +110,7 @@ export function Navbar() {
           ))}
           <div className="pt-4 flex flex-col space-y-2 px-3">
             {user ? (
-              <Link to={profile?.role === 'admin' ? '/admin' : '/dashboard'} onClick={() => setIsMobileMenuOpen(false)}>
+              <Link to={profile?.role === 'admin' || user?.email === 'denacquah5@gmail.com' ? '/admin' : '/dashboard'} onClick={() => setIsMobileMenuOpen(false)}>
                 <Button className="w-full" variant="outline">Dashboard</Button>
               </Link>
             ) : (

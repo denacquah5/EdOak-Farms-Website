@@ -16,7 +16,7 @@ service cloud.firestore {
     function isAdmin() {
       return isAuthenticated() &&
         (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "denacquah5@gmail.com" && request.auth.token.email_verified == true));
+          request.auth.token.email == "denacquah5@gmail.com");
     }
     
     function hasOnlyAllowedFields(fields) {
@@ -34,9 +34,9 @@ service cloud.firestore {
       return hasOnlyAllowedFields(['uid', 'email', 'displayName', 'role', 'createdAt']) &&
              data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
              data.email is string && isValidEmail(data.email) && data.email.size() < 150 &&
-             data.displayName is string && data.displayName.size() < 100 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() < 100)) &&
              data.role in ['client', 'admin'] &&
-             data.createdAt is timestamp;
+             (!('createdAt' in data) || data.createdAt is timestamp);
     }
 
     function isValidProject(data) {
@@ -82,6 +82,27 @@ service cloud.firestore {
              data.status in ['new', 'contacted', 'resolved'];
     }
 
+    function isValidNotification(data) {
+      return hasOnlyAllowedFields(['userId', 'title', 'message', 'read', 'createdAt', 'type', 'relatedId']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.message is string && data.message.size() > 0 && data.message.size() < 2000 &&
+             data.read is bool &&
+             data.createdAt is timestamp &&
+             (!('type' in data) || (data.type is string && data.type.size() < 100)) &&
+             (!('relatedId' in data) || (data.relatedId is string && data.relatedId.size() < 100));
+    }
+
+    function isValidInventoryItem(data) {
+      return hasOnlyAllowedFields(['name', 'category', 'quantity', 'unit', 'minThreshold', 'lastUpdated']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 150 &&
+             data.category in ['seeds', 'fertilizer', 'chemicals', 'equipment', 'packaging', 'other'] &&
+             data.quantity is number && data.quantity >= 0 &&
+             data.unit is string && data.unit.size() > 0 && data.unit.size() < 50 &&
+             data.minThreshold is number && data.minThreshold >= 0 &&
+             data.lastUpdated is timestamp;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -93,8 +114,8 @@ service cloud.firestore {
                     request.resource.data.uid == request.auth.uid;
       allow update: if isAuthenticated() && isValidUser(request.resource.data) && 
                     ((isOwner(userId) && request.resource.data.role == resource.data.role) || isAdmin()) &&
-                    request.resource.data.uid == resource.data.uid &&
-                    request.resource.data.createdAt == resource.data.createdAt;
+                    (!('uid' in resource.data) || request.resource.data.uid == resource.data.uid) &&
+                    (!('createdAt' in resource.data) || request.resource.data.createdAt == resource.data.createdAt);
       allow delete: if isAdmin();
     }
 
@@ -132,6 +153,31 @@ service cloud.firestore {
       allow create: if isValidInquiry(request.resource.data);
       allow update: if isAdmin() && isValidInquiry(request.resource.data) &&
                     request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin() && isValidNotification(request.resource.data);
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid && 
+                    isValidNotification(request.resource.data) &&
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']) &&
+                    request.resource.data.userId == resource.data.userId &&
+                    request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+    }
+
+    match /mail/{mailId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if false; // Only extension updates this
+      allow delete: if isAdmin();
+    }
+
+    match /inventory/{itemId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin() && isValidInventoryItem(request.resource.data);
+      allow update: if isAdmin() && isValidInventoryItem(request.resource.data);
       allow delete: if isAdmin();
     }
   }

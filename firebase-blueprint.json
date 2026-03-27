@@ -71,6 +71,52 @@
         "status": { "type": "string", "enum": ["new", "contacted", "resolved"] }
       },
       "required": ["name", "email", "message", "createdAt", "status"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification for a user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "timestamp" },
+        "type": { "type": "string" },
+        "relatedId": { "type": "string" }
+      },
+      "required": ["userId", "title", "message", "read", "createdAt"]
+    },
+    "Mail": {
+      "title": "Mail",
+      "description": "Email trigger for Firebase Trigger Email extension",
+      "type": "object",
+      "properties": {
+        "to": { "type": "array", "items": { "type": "string" } },
+        "toUids": { "type": "array", "items": { "type": "string" } },
+        "message": { 
+          "type": "object",
+          "properties": {
+            "subject": { "type": "string" },
+            "html": { "type": "string" },
+            "text": { "type": "string" }
+          }
+        }
+      }
+    },
+    "InventoryItem": {
+      "title": "Inventory Item",
+      "description": "An item in the farm inventory",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["seeds", "fertilizer", "chemicals", "equipment", "packaging", "other"] },
+        "quantity": { "type": "number" },
+        "unit": { "type": "string" },
+        "minThreshold": { "type": "number" },
+        "lastUpdated": { "type": "timestamp" }
+      },
+      "required": ["name", "category", "quantity", "unit", "minThreshold", "lastUpdated"]
     }
   },
   "firestore": {
@@ -93,6 +139,18 @@
     "/inquiries/{inquiryId}": {
       "schema": { "$ref": "#/entities/Inquiry" },
       "description": "Stores contact form submissions"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "Stores user notifications"
+    },
+    "/mail/{mailId}": {
+      "schema": { "$ref": "#/entities/Mail" },
+      "description": "Stores emails to be sent via Firebase Extension"
+    },
+    "/inventory/{itemId}": {
+      "schema": { "$ref": "#/entities/InventoryItem" },
+      "description": "Stores farm inventory items"
     }
   }
 }

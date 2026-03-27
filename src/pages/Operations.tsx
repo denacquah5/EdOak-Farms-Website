@@ -38,11 +38,21 @@ export default function Operations() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-[var(--color-primary-dark)] py-20 text-center">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">How We Work</h1>
-        <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
-          An inside look at the operational intelligence and infrastructure powering EdOak Farms.
-        </p>
+      <div className="relative bg-[var(--color-primary-dark)] py-20 text-center overflow-hidden">
+        <div className="absolute inset-0 opacity-30">
+          <img 
+            src="https://images.unsplash.com/photo-1595844730298-b960fad97301?q=80&w=2070&auto=format&fit=crop" 
+            alt="Farm Operations" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">How We Work</h1>
+          <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
+            An inside look at the operational intelligence and infrastructure powering EdOak Farms.
+          </p>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

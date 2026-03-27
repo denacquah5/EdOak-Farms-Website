@@ -1,17 +1,35 @@
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { DashboardLayout } from '../../components/layout/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
+import { Card, CardContent } from '../../components/ui/Card';
 import { useAuth } from '../../contexts/AuthContext';
-import { Sprout, TrendingUp, Clock, FileText, CheckCircle2 } from 'lucide-react';
+import { Sprout, TrendingUp, Clock, CheckCircle2 } from 'lucide-react';
+
+// Import sub-pages
+import { Notifications } from './Notifications';
+import { MyFarms } from './MyFarms';
+import { Updates } from './Updates';
+import { Settings } from './Settings';
 
 function Overview() {
   const { profile } = useAuth();
   
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Welcome back, {profile?.displayName?.split(' ')[0]}</h1>
-        <p className="text-slate-500">Here is an overview of your Farm For Me portfolio.</p>
+      {/* Banner */}
+      <div className="relative rounded-2xl overflow-hidden bg-[var(--color-primary-dark)] h-48 flex items-center px-8 shadow-md">
+        <div className="absolute inset-0 opacity-40">
+          <img 
+            src="https://images.unsplash.com/photo-1595844730298-b960fad97301?q=80&w=2070&auto=format&fit=crop" 
+            alt="Farm Operations" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-3xl font-serif font-bold text-white mb-2">Welcome back, {profile?.displayName?.split(' ')[0] || 'Investor'}</h1>
+          <p className="text-emerald-50 text-lg">Here is an overview of your Farm For Me portfolio.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -69,7 +87,7 @@ function Overview() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-slate-900">Block A-14</h3>
-                  <p className="text-slate-500">Cassava Production â 5 Acres</p>
+                  <p className="text-slate-500">Cassava Production • 5 Acres</p>
                 </div>
               </div>
               
@@ -132,7 +150,10 @@ export default function ClientDashboard() {
     <DashboardLayout>
       <Routes>
         <Route path="/" element={<Overview />} />
-        {/* Add more routes like /farms, /updates as needed */}
+        <Route path="/farms" element={<MyFarms />} />
+        <Route path="/updates" element={<Updates />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </DashboardLayout>
   );

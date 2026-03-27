@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -61,62 +61,80 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md border-none shadow-xl">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 bg-[var(--color-accent)] rounded-xl flex items-center justify-center">
-              <Tractor className="w-6 h-6 text-white" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-serif font-bold text-slate-900">Create an Account</CardTitle>
-          <CardDescription>
-            Join EdOak Farms and start your agricultural portfolio
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md text-center">
-              {error}
-            </div>
-          )}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700" htmlFor="firstName">First Name</label>
-                <Input id="firstName" name="firstName" required value={formData.firstName} onChange={handleChange} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700" htmlFor="lastName">Last Name</label>
-                <Input id="lastName" name="lastName" required value={formData.lastName} onChange={handleChange} />
+    <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex">
+      {/* Left side - Image */}
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <img 
+          src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2072&auto=format&fit=crop" 
+          alt="Agriculture" 
+          className="absolute inset-0 w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+        />
+        <div className="absolute inset-0 bg-[var(--color-primary-dark)]/50 mix-blend-multiply" />
+        <div className="absolute inset-0 flex flex-col justify-end p-16 text-white">
+          <h2 className="text-4xl font-serif font-bold mb-4">Invest in Agriculture</h2>
+          <p className="text-lg text-slate-200 max-w-md">Create an account to access our Farm For Me program and build your agricultural portfolio today.</p>
+        </div>
+      </div>
+
+      {/* Right side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <Card className="w-full max-w-md border-none shadow-xl">
+          <CardHeader className="space-y-1 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 bg-[var(--color-accent)] rounded-xl flex items-center justify-center">
+                <Tractor className="w-6 h-6 text-white" />
               </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700" htmlFor="email">Email</label>
-              <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700" htmlFor="password">Password</label>
-              <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700" htmlFor="confirmPassword">Confirm Password</label>
-              <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} />
-            </div>
+            <CardTitle className="text-2xl font-serif font-bold text-slate-900">Create an Account</CardTitle>
+            <CardDescription>
+              Join EdOak Farms and start your agricultural portfolio
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md text-center">
+                {error}
+              </div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700" htmlFor="firstName">First Name</label>
+                  <Input id="firstName" name="firstName" required value={formData.firstName} onChange={handleChange} />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700" htmlFor="lastName">Last Name</label>
+                  <Input id="lastName" name="lastName" required value={formData.lastName} onChange={handleChange} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700" htmlFor="email">Email</label>
+                <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700" htmlFor="password">Password</label>
+                <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700" htmlFor="confirmPassword">Confirm Password</label>
+                <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} />
+              </div>
+              
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Creating Account...' : 'Sign Up'}
+              </Button>
+            </form>
             
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </Button>
-          </form>
-          
-          <div className="mt-6 text-center text-sm text-slate-600">
-            Already have an account?{' '}
-            <Link to="/login" className="font-medium text-[var(--color-primary)] hover:underline">
-              Sign in
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="mt-6 text-center text-sm text-slate-600">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-[var(--color-primary)] hover:underline">
+                Sign in
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

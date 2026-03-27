@@ -7,11 +7,21 @@ export default function About() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-[var(--color-primary-dark)] py-20 text-center">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">About EdOak Farms</h1>
-        <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
-          Building the infrastructure for modern, scalable, and profitable agriculture in Ghana.
-        </p>
+      <div className="relative bg-[var(--color-primary-dark)] py-20 text-center overflow-hidden">
+        <div className="absolute inset-0 opacity-30">
+          <img 
+            src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=2070&auto=format&fit=crop" 
+            alt="Farm Landscape" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">About EdOak Farms</h1>
+          <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
+            Building the infrastructure for modern, scalable, and profitable agriculture in Ghana.
+          </p>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

@@ -81,15 +81,18 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: "Farm For Me", desc: "Our flagship managed investment offering. Own farm production without the operational burden.", highlight: true },
-              { title: "Commercial Farming", desc: "Large-scale crop production utilizing modern mechanization and irrigation systems." },
-              { title: "Processing & Value Addition", desc: "Transforming raw crops like cassava into higher-value finished and semi-finished products." },
-              { title: "Farm Management", desc: "Professional setup and management of agricultural assets for landowners and third-party investors." },
-              { title: "Agricultural Consulting", desc: "Expert advisory services in farm strategy, irrigation planning, and agribusiness structuring." },
-              { title: "Produce Supply & Logistics", desc: "Reliable sourcing, aggregation, and delivery of agricultural produce to institutional buyers." }
+              { title: "Farm For Me", desc: "Our flagship managed investment offering. Own farm production without the operational burden.", highlight: true, image: "https://images.unsplash.com/photo-1592982537447-6f2a6a0a3023?q=80&w=800&auto=format&fit=crop" },
+              { title: "Commercial Farming", desc: "Large-scale crop production utilizing modern mechanization and irrigation systems.", image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=800&auto=format&fit=crop" },
+              { title: "Processing & Value Addition", desc: "Transforming raw crops like cassava into higher-value finished and semi-finished products.", image: "https://images.unsplash.com/photo-1587049352847-4d4b137a414a?q=80&w=800&auto=format&fit=crop" },
+              { title: "Farm Management", desc: "Professional setup and management of agricultural assets for landowners and third-party investors.", image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=800&auto=format&fit=crop" },
+              { title: "Agricultural Consulting", desc: "Expert advisory services in farm strategy, irrigation planning, and agribusiness structuring.", image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=800&auto=format&fit=crop" },
+              { title: "Produce Supply & Logistics", desc: "Reliable sourcing, aggregation, and delivery of agricultural produce to institutional buyers.", image: "https://images.unsplash.com/photo-1601598851547-4302969d0614?q=80&w=800&auto=format&fit=crop" }
             ].map((service, i) => (
-              <Card key={i} className={`h-full transition-shadow hover:shadow-md ${service.highlight ? 'border-[var(--color-accent)] shadow-sm' : ''}`}>
-                <CardContent className="p-8 flex flex-col h-full">
+              <Card key={i} className={`h-full transition-shadow hover:shadow-md overflow-hidden ${service.highlight ? 'border-[var(--color-accent)] shadow-sm' : ''}`}>
+                <div className="h-48 w-full relative">
+                  <img src={service.image} alt={service.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                </div>
+                <CardContent className="p-8 flex flex-col h-[calc(100%-12rem)]">
                   {service.highlight && (
                     <span className="inline-block px-3 py-1 bg-[var(--color-accent)] text-white text-xs font-bold rounded-full mb-4 w-fit">
                       FLAGSHIP OFFERING

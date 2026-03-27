@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/layout/Navbar';
@@ -18,6 +19,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ClientDashboard from './pages/dashboard/ClientDashboard';
+import { Notifications } from './pages/dashboard/Notifications';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
 function ProtectedRoute({ children, requireAdmin = false }: { children: React.ReactNode, requireAdmin?: boolean }) {
@@ -25,7 +27,12 @@ function ProtectedRoute({ children, requireAdmin = false }: { children: React.Re
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   if (!user) return <Navigate to="/login" />;
-  if (requireAdmin && profile?.role !== 'admin') return <Navigate to="/dashboard" />;
+  
+  // Allow access if the user has the admin role OR if they are the designated default admin
+  const isDefaultAdmin = user.email === 'denacquah5@gmail.com';
+  if (requireAdmin && profile?.role !== 'admin' && !isDefaultAdmin) {
+    return <Navigate to="/dashboard" />;
+  }
 
   return <>{children}</>;
 }

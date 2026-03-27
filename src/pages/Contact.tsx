@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent } from '../components/ui/Card';
@@ -55,11 +55,21 @@ export default function Contact() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-[var(--color-primary-dark)] py-20 text-center">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Contact Us</h1>
-        <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
-          Ready to work with EdOak Farms? Get in touch with our team today.
-        </p>
+      <div className="relative bg-[var(--color-primary-dark)] py-20 text-center overflow-hidden">
+        <div className="absolute inset-0 opacity-30">
+          <img 
+            src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2070&auto=format&fit=crop" 
+            alt="Contact EdOak Farms" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Contact Us</h1>
+          <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
+            Ready to work with EdOak Farms? Get in touch with our team today.
+          </p>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

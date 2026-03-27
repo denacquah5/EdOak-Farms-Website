@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { auth } from '../../lib/firebase';
+import { auth, db } from '../../lib/firebase';
 import { signOut } from 'firebase/auth';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { 
   LayoutDashboard, 
   Tractor, 
@@ -13,9 +14,9 @@ import {
   Menu,
   X,
   FileText,
-  Package
+  Package,
+  Bell
 } from 'lucide-react';
-import { useState } from 'react';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -23,25 +24,45 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children, isAdmin = false }: DashboardLayoutProps) {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    
+    // Listen for unread notifications
+    const q = query(
+      collection(db, 'notifications'), 
+      where('userId', '==', user.uid),
+      where('read', '==', false)
+    );
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setUnreadCount(snapshot.docs.length);
+    }, (error) => {
+      console.error("Error fetching notifications:", error);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const handleLogout = async () => {
     await signOut(auth);
     navigate('/login');
   };
 
-  const clientLinks = [
+  const clientLinks: { name: string; path: string; icon: any; badge?: number }[] = [
     { name: 'Overview', path: '/dashboard', icon: LayoutDashboard },
     { name: 'My Farms', path: '/dashboard/farms', icon: Sprout },
     { name: 'Updates', path: '/dashboard/updates', icon: FileText },
-    { name: 'Documents', path: '/dashboard/documents', icon: FileText },
+    { name: 'Notifications', path: '/dashboard/notifications', icon: Bell, badge: unreadCount },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
-  const adminLinks = [
+  const adminLinks: { name: string; path: string; icon: any; badge?: number }[] = [
     { name: 'Overview', path: '/admin', icon: LayoutDashboard },
     { name: 'Clients', path: '/admin/clients', icon: Users },
     { name: 'Projects', path: '/admin/projects', icon: Tractor },
@@ -72,7 +93,7 @@ export function DashboardLayout({ children, isAdmin = false }: DashboardLayoutPr
           <div className="h-20 flex items-center justify-between px-6 border-b border-slate-100">
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-[var(--color-primary)] rounded flex items-center justify-center">
-                <span className="text-white font-serif font-bold text-sm">EF</span>
+                <Tractor className="w-5 h-5 text-white" />
               </div>
               <span className="font-serif font-bold text-lg text-[var(--color-primary-dark)]">
                 {isAdmin ? 'Admin Portal' : 'Investor Portal'}
@@ -102,14 +123,23 @@ export function DashboardLayout({ children, isAdmin = false }: DashboardLayoutPr
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                     isActive 
                       ? 'bg-[var(--color-primary)] text-white' 
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                  {link.name}
+                  <div className="flex items-center">
+                    <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    {link.name}
+                  </div>
+                  {link.badge !== undefined && link.badge > 0 && (
+                    <span className={`px-2 py-0.5 text-xs font-bold rounded-full ${
+                      isActive ? 'bg-white text-[var(--color-primary)]' : 'bg-red-100 text-red-600'
+                    }`}>
+                      {link.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -136,7 +166,28 @@ export function DashboardLayout({ children, isAdmin = false }: DashboardLayoutPr
             <Menu className="w-6 h-6" />
           </button>
           <span className="font-serif font-bold text-[var(--color-primary-dark)]">EdOak Farms</span>
-          <div className="w-6" /> {/* Spacer for centering */}
+          <div className="flex items-center">
+            {!isAdmin && (
+              <Link to="/dashboard/notifications" className="relative p-2 text-slate-500 mr-2">
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                )}
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop Header (Optional, for notifications) */}
+        <div className="hidden lg:flex h-16 bg-white border-b border-slate-200 items-center justify-end px-8">
+          {!isAdmin && (
+            <Link to="/dashboard/notifications" className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+              )}
+            </Link>
+          )}
         </div>
 
         {/* Page Content */}

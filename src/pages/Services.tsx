@@ -59,11 +59,21 @@ export default function Services() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-[var(--color-primary-dark)] py-20 text-center">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Our Services</h1>
-        <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
-          A fully integrated suite of agribusiness solutions designed for scale, efficiency, and profitability.
-        </p>
+      <div className="relative bg-[var(--color-primary-dark)] py-20 text-center overflow-hidden">
+        <div className="absolute inset-0 opacity-30">
+          <img 
+            src="https://images.unsplash.com/photo-1592982537447-6f2a6a0a3023?q=80&w=2070&auto=format&fit=crop" 
+            alt="Farm Services" 
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className="relative z-10">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Our Services</h1>
+          <p className="text-lg text-emerald-100 max-w-2xl mx-auto px-4">
+            A fully integrated suite of agribusiness solutions designed for scale, efficiency, and profitability.
+          </p>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

@@ -1,7 +1,9 @@
 {
-  "apiKey": "TODO_KEYHERE",
-  "authDomain": "TODO_AUTH_DOMAIN",
-  "projectId": "TODO_PROJECT_ID",
-  "appId": "TODO_APP_ID",
+  "apiKey": "AIzaSyB63gM3z41B0YT7EbgqIlpkahfeSpjNJ8U",
+  "authDomain": "edoak-farms.firebaseapp.com",
+  "projectId": "edoak-farms",
+  "storageBucket": "edoak-farms.firebasestorage.app",
+  "messagingSenderId": "977592994012",
+  "appId": "1:977592994012:web:6fd3e84b1daf8035798c19",
   "firestoreDatabaseId": "(default)"
 }
